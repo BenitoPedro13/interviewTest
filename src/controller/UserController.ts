@@ -12,8 +12,8 @@ export class UserController {
         try {
 
             if(userToUpdate.name.length !== 0 && userToUpdate.name !== undefined){
-                const now = new Date()
-                const nowISO = now.toISOString()
+                const now = new Date();
+                const nowISO = now.toISOString();
                 return await this.userRepository.update(userToUpdate, {ultimoAcesso: nowISO});
             }
 
@@ -72,7 +72,7 @@ export class UserController {
     async create(request: Request, response: Response, next: NextFunction) {
         
         try {
-            const {name, username, senha} = request.body
+            const {name, username, senha} = request.body;
 
             const isEqualZero = [name, username, senha].find((value) => {
                 return value.length === 0;
@@ -86,12 +86,12 @@ export class UserController {
                 const userExist = await this.userRepository.findOne({username: request.body.username});
 
                 if(userExist){
-                    return {success: false, message: "Esse nome de usuario ja existe, tente outro."}
+                    return {success: false, message: "Esse nome de usuario ja existe, tente outro."};
                 }
 
                 await bcrypt.hash(senha, 10, async (error, hash) => {
                     if(error){
-                        console.log(error)
+                        console.log(error);
                         return error;
                     }
                     const userCreated = await this.userRepository.save({
@@ -100,13 +100,9 @@ export class UserController {
                         senha: hash
                     });
                     await this.updateLastAccess(userCreated);
-                    console.log(userCreated.senha)
                 })
-
-                
                 return {success: true};
             }
-            
             return response;
         } catch (error) {
             console.error(error);
@@ -136,7 +132,7 @@ export class UserController {
                 return {success: false};
             }
         }
-        return {success: false, message: "Please fill all fields."}
+        return {success: false, message: "Please fill all fields."};
     }
 
     async delete(request: Request, response: Response, next: NextFunction) {
