@@ -1,7 +1,7 @@
 import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
 import {User} from "../entity/User";
-const bcrypt = require ('bcrypt');
+import * as bcrypt from "bcrypt";
 
 export class UserController {
 
@@ -89,9 +89,9 @@ export class UserController {
                     return {success: false, message: "Esse nome de usuario ja existe, tente outro."};
                 }
 
-                await bcrypt.hash(senha, 10, async (error, hash) => {
-                    if(error){
-                        console.log(error);
+                bcrypt.hash(senha, 10, async (error, hash) => {
+                    if (error) {
+                        console.error(error);
                         return error;
                     }
                     const userCreated = await this.userRepository.save({
@@ -117,20 +117,49 @@ export class UserController {
         const isValid = this.validateFields(request);
 
         if(isValid){
-            try {
+            const userToUpdate = await this.userRepository.findOne(request.params.id)
+                        
+            if (userToUpdate !== undefined) {
+                try {
 
-                const userToUpdate = await this.userRepository.findOne(request.params.id);
-                if(userToUpdate.name.length !== 0 && userToUpdate.name !== undefined){
-                    await this.userRepository.update(userToUpdate, request.body);
-                    await this.updateLastAccess(userToUpdate);
-                    return {success: true};
+                    const fieldsToUpdate = Object.entries(request.body)
+                    const [fieldName, senha]: any = fieldsToUpdate.find(value => {
+                        
+                        return value[0] === 'senha'
+                    })
+
+                    if(!senha.length){
+                        return {success: false};
+                    }
+
+                    await bcrypt.hash(senha, 10, async (error, hash) => {
+
+                        if (error) {
+                            console.error(error);
+                            return error;
+                        }
+
+                        request.body.senha = hash;
+
+                        try {
+                            await this.userRepository.update(userToUpdate, request.body);
+                            await this.updateLastAccess(userToUpdate);
+                            return true;
+                        } catch (error) {
+                            console.error(error);
+                            return error;
+                        };
+
+                    })
+
+                    return {success: true, message: "amem"};
+                    
+                } catch (error) {
+                    console.error(error);
+                    return {success: false};
                 }
-            
-                return {success: false};
-            } catch (error) {
-                console.error(error);
-                return {success: false};
             }
+            return {success: false, message: "The user you are trying to update does not exist."}
         }
         return {success: false, message: "Please fill all fields."};
     }

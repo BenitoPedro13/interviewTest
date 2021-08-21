@@ -14,11 +14,20 @@
 
 ## 👨‍💻 - API Documentation
 
+
+
 1. Rota /create :
 - aceita apenas solicitaçoes http do tipo POST
 	- recebe um JSON com as informaçoes do usuario
+	- template do json: 
+		{
+			name: 'seu_nome',
+			username: 'seu_username_unico',
+			senha: 'sua senha'
+		}
 	- **todos os campos devem estar preenchidos**
 	- **cada username deve ser unico para ser aceito**
+	
 
 2. Rota /read:
 - aceita apenas solicitaçoes http do tipo GET
@@ -35,6 +44,12 @@
 4. Rota /update/:id
 - aceita apenas solicitaçoes http do tipo PUT
 	- recebe um JSON com as informaçoes do usuario
+	- template do json (**pelo menos um campo deve ser enviado**) : 
+		{
+			`Opcional` name: 'seu_nome',
+			`Opcional` username: 'seu_username_unico',
+			`Opcional` senha: 'sua senha' `Opcional`
+		}
 	- **pelo menos um campo deve ser enviado**
 	- **todos os campos enviados devem estar preenchidos**
 	- **cada username deve ser unico para ser aceito**
