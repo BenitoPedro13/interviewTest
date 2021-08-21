@@ -23,7 +23,7 @@
 		{
 			name: 'seu_nome',
 			username: 'seu_username_unico',
-			senha: 'sua senha'
+			senha: 'sua_senha'
 		}
 	- **todos os campos devem estar preenchidos**
 	- **cada username deve ser unico para ser aceito**
@@ -48,7 +48,7 @@
 		{
 			`Opcional` name: 'seu_nome',
 			`Opcional` username: 'seu_username_unico',
-			`Opcional` senha: 'sua senha' `Opcional`
+			`Opcional` senha: 'sua_senha'
 		}
 	- **pelo menos um campo deve ser enviado**
 	- **todos os campos enviados devem estar preenchidos**
